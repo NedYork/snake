@@ -1,0 +1,47 @@
+var Snake = function () {
+  this.direction = "N";
+  this.segments = [[10,10]];
+  this.dirs = { N: [-1, 0], S: [1, 0], E: [0, 1], W: [0, -1] };
+
+};
+
+
+Snake.prototype.move = function () {
+  this.segments[0] = c.plus(this.segments[0], this.dirs[this.direction]);
+  this.head = this.segments[0];
+};
+
+Snake.prototype.turn = function (dir) {
+  if (!c.isOpposite(this.direction, dir)) {
+    this.direction = dir;
+  }
+};
+
+var Coord = function () {};
+var c = Coord.prototype;
+
+c.plus = function (array1, array2) {
+  return [array1[0] + array2[0], array1[1] + array2[1]];
+};
+
+c.equals = function (array1, array2) {
+  return (array1[0] === array2[0]) && (array1[1] === array2[1]);
+};
+
+c.isOpposite = function (dir1, dir2) {
+  var direcs1 = ["N", "S", "E", "W"];
+  var direcs2 = ["S", "N", "W", "E"];
+  return direcs1.indexOf(dir1) === direcs2.indexOf(dir2);
+};
+
+
+var Board = function () {
+  this.snake = new Snake();
+  this.grid = [];
+  for (var i = 0; i < 25; i++) {
+    this.grid.push(new Array(25));
+  }
+};
+
+
+module.exports = Board;
