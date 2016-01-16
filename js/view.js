@@ -9,21 +9,16 @@ var View = function ($el) {
   this.setupView();
   this.bindKeyEvents();
 
-  setInterval(this.step.bind(this), 100);
+  setInterval(this.step.bind(this), 70);
 };
 
 View.prototype.bindKeyEvents = function () {
   $(document).on("keydown", function (e) {
-    console.log(e.keyCode);
-    // var dirs = {"38": "N", "40": "S", "37": "W", "39": "E"};
-    if (e.keyCode === 38) {
-      this.snake.turn("N");
-    } else if (e.keyCode === 37) {
-      this.snake.turn("W");
-    } else if (e.keyCode === 39) {
-      this.snake.turn("E");
-    } else if (e.keyCode === 40) {
-      this.snake.turn("S");
+    var keycodes = [37, 38, 39, 40];
+    var direction = ["W", "N", "E", "S"];
+    if (keycodes.includes(e.keyCode)) {
+      var movement = keycodes.indexOf(e.keyCode);
+      this.snake.turn(direction[movement]);
     }
   }.bind(this));
 };
@@ -36,7 +31,6 @@ View.prototype.step = function () {
 View.prototype.render = function () {
   var board = this.board;
   var apple = this.apple;
-  // debugger
   var snake = this.snake;
   var positions = snake.segments;
   var equals = function (array1, array2) {
@@ -46,7 +40,6 @@ View.prototype.render = function () {
   $("li").each(function (idx, el) {
     $(el).removeClass().addClass("open");
     if (equals(apple.position, $(el).data('pos'))) {
-
       $(el).addClass("apple");
     }
 
@@ -60,9 +53,10 @@ View.prototype.render = function () {
 
 View.prototype.setupView = function () {
   this.$el.append("<ul>");
+  var boardlen = this.board.grid.length
   var $ul = $("<ul>").addClass("snake-grid group");
-  for (var i = 0; i < 625; i++) {
-    var pos = [parseInt(i / 25), i % 25];
+  for (var i = 0; i < Math.pow(boardlen, 2); i++) {
+    var pos = [parseInt(i / boardlen), i % boardlen];
     $("<li>").addClass("open").data("pos", pos).appendTo($ul);
   }
   this.$el.html($ul);

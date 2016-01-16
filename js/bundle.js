@@ -66,21 +66,16 @@
 	  this.setupView();
 	  this.bindKeyEvents();
 	
-	  setInterval(this.step.bind(this), 100);
+	  setInterval(this.step.bind(this), 70);
 	};
 	
 	View.prototype.bindKeyEvents = function () {
 	  $(document).on("keydown", function (e) {
-	    console.log(e.keyCode);
-	    // var dirs = {"38": "N", "40": "S", "37": "W", "39": "E"};
-	    if (e.keyCode === 38) {
-	      this.snake.turn("N");
-	    } else if (e.keyCode === 37) {
-	      this.snake.turn("W");
-	    } else if (e.keyCode === 39) {
-	      this.snake.turn("E");
-	    } else if (e.keyCode === 40) {
-	      this.snake.turn("S");
+	    var keycodes = [37, 38, 39, 40];
+	    var direction = ["W", "N", "E", "S"];
+	    if (keycodes.includes(e.keyCode)) {
+	      var movement = keycodes.indexOf(e.keyCode);
+	      this.snake.turn(direction[movement]);
 	    }
 	  }.bind(this));
 	};
@@ -93,7 +88,6 @@
 	View.prototype.render = function () {
 	  var board = this.board;
 	  var apple = this.apple;
-	  // debugger
 	  var snake = this.snake;
 	  var positions = snake.segments;
 	  var equals = function (array1, array2) {
@@ -103,7 +97,6 @@
 	  $("li").each(function (idx, el) {
 	    $(el).removeClass().addClass("open");
 	    if (equals(apple.position, $(el).data('pos'))) {
-	
 	      $(el).addClass("apple");
 	    }
 	
@@ -117,9 +110,10 @@
 	
 	View.prototype.setupView = function () {
 	  this.$el.append("<ul>");
+	  var boardlen = this.board.grid.length
 	  var $ul = $("<ul>").addClass("snake-grid group");
-	  for (var i = 0; i < 625; i++) {
-	    var pos = [parseInt(i / 25), i % 25];
+	  for (var i = 0; i < Math.pow(boardlen, 2); i++) {
+	    var pos = [parseInt(i / boardlen), i % boardlen];
 	    $("<li>").addClass("open").data("pos", pos).appendTo($ul);
 	  }
 	  this.$el.html($ul);
@@ -154,11 +148,12 @@
 	var Snake = function (board) {
 	  this.board = board;
 	  this.direction = "N";
-	  this.segments = [[10,10]];
+	  var x = Math.floor(Math.random() * 20)
+	  var y = Math.floor(Math.random() * 20)
+	  this.segments = [[x, y]];
 	  this.dirs = { N: [-1, 0], S: [1, 0], E: [0, 1], W: [0, -1] };
-	
+	  this.head = this.segments[0]
 	};
-	
 	
 	Snake.prototype.move = function () {
 	  this.segments[0] = c.plus(this.segments[0], this.dirs[this.direction]);
@@ -166,9 +161,8 @@
 	  for (i = this.segments.length - 1; i > 0; i--) {
 	    this.segments[i] = this.segments[i - 1];
 	  }
-	
 	  this.board.checkEat();
-	
+	  // this.board.selfCollision();
 	};
 	
 	Snake.prototype.turn = function (dir) {
@@ -183,8 +177,7 @@
 	    var last_segment = this.segments[this.segments.length - 1]
 	    this.segments.push(last_segment)
 	  }
-	  // debugger
-	}
+	};
 	
 	//----------------------------------------------------------
 	// BOARD
@@ -193,7 +186,6 @@
 	  for (var i = 0; i < 25; i++) {
 	    this.grid.push(new Array(25));
 	  }
-	
 	  this.snake = new Snake(this);
 	  this.apple = new Apple(this);
 	};
@@ -203,7 +195,14 @@
 	    this.apple.position = [];
 	    this.apple.generateApple();
 	    this.snake.grow();
-	    // debugger
+	  }
+	};
+	
+	Board.prototype.selfCollision = function () {
+	  debugger;
+	  if (this.snake.segments.slice(1).includes(this.snake.head)) {
+	
+	    alert("you lose!");
 	  }
 	}
 	
@@ -211,18 +210,20 @@
 	// APPLE
 	var Apple = function (board) {
 	  this.board = board;
-	  // this.position = [];
 	  this.generateApple();
-	}
+	};
 	
 	Apple.prototype.generateApple = function () {
-	  // if (this.position.length === 0) {
-	
 	  var x = Math.floor(Math.random() * 25);
 	  var y = Math.floor(Math.random() * 25);
 	  this.position = [x, y];
-	  // }
-	}
+	  // debugger
+	  var snakeSegments = this.board.snake.segments;
+	
+	  if (snakeSegments.includes(this.position)) {
+	    generateApple();
+	  }
+	};
 	
 	
 	

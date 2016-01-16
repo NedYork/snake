@@ -20,11 +20,12 @@ c.isOpposite = function (dir1, dir2) {
 var Snake = function (board) {
   this.board = board;
   this.direction = "N";
-  this.segments = [[10,10]];
+  var x = Math.floor(Math.random() * 20)
+  var y = Math.floor(Math.random() * 20)
+  this.segments = [[x, y]];
   this.dirs = { N: [-1, 0], S: [1, 0], E: [0, 1], W: [0, -1] };
-
+  this.head = this.segments[0]
 };
-
 
 Snake.prototype.move = function () {
   this.segments[0] = c.plus(this.segments[0], this.dirs[this.direction]);
@@ -32,9 +33,8 @@ Snake.prototype.move = function () {
   for (i = this.segments.length - 1; i > 0; i--) {
     this.segments[i] = this.segments[i - 1];
   }
-
   this.board.checkEat();
-
+  // this.board.selfCollision();
 };
 
 Snake.prototype.turn = function (dir) {
@@ -49,8 +49,7 @@ Snake.prototype.grow = function () {
     var last_segment = this.segments[this.segments.length - 1]
     this.segments.push(last_segment)
   }
-  // debugger
-}
+};
 
 //----------------------------------------------------------
 // BOARD
@@ -59,7 +58,6 @@ var Board = function () {
   for (var i = 0; i < 25; i++) {
     this.grid.push(new Array(25));
   }
-
   this.snake = new Snake(this);
   this.apple = new Apple(this);
 };
@@ -69,7 +67,14 @@ Board.prototype.checkEat = function () {
     this.apple.position = [];
     this.apple.generateApple();
     this.snake.grow();
-    // debugger
+  }
+};
+
+Board.prototype.selfCollision = function () {
+  debugger;
+  if (this.snake.segments.slice(1).includes(this.snake.head)) {
+
+    alert("you lose!");
   }
 }
 
@@ -77,18 +82,20 @@ Board.prototype.checkEat = function () {
 // APPLE
 var Apple = function (board) {
   this.board = board;
-  // this.position = [];
   this.generateApple();
-}
+};
 
 Apple.prototype.generateApple = function () {
-  // if (this.position.length === 0) {
-
   var x = Math.floor(Math.random() * 25);
   var y = Math.floor(Math.random() * 25);
   this.position = [x, y];
-  // }
-}
+  // debugger
+  var snakeSegments = this.board.snake.segments;
+
+  if (snakeSegments.includes(this.position)) {
+    generateApple();
+  }
+};
 
 
 
