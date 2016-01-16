@@ -14,11 +14,15 @@ var View = function ($el) {
 
 View.prototype.bindKeyEvents = function () {
   $(document).on("keydown", function (e) {
+    console.log(e.keyCode);
     var keycodes = [37, 38, 39, 40];
     var direction = ["W", "N", "E", "S"];
     if (keycodes.includes(e.keyCode)) {
       var movement = keycodes.indexOf(e.keyCode);
       this.snake.turn(direction[movement]);
+    } else if (e.keyCode === 192) {
+      debugger;
+      console.log("youre in debugger")
     }
   }.bind(this));
 };

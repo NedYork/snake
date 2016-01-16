@@ -24,7 +24,6 @@ var Snake = function (board) {
   var y = Math.floor(Math.random() * 20)
   this.segments = [[x, y]];
   this.dirs = { N: [-1, 0], S: [1, 0], E: [0, 1], W: [0, -1] };
-  this.head = this.segments[0]
 };
 
 Snake.prototype.move = function () {
@@ -33,8 +32,17 @@ Snake.prototype.move = function () {
   for (i = this.segments.length - 1; i > 0; i--) {
     this.segments[i] = this.segments[i - 1];
   }
-  this.board.checkEat();
-  // this.board.selfCollision();
+
+  if (this.board.checkEat()) {
+    this.board.snakeEat();
+  } else {
+    /* checks collision but causes loss because #checkCollision checks
+    if snake.segments.includes(snake head). but when snake is growing,
+    snake segments includes heads and thus causes loss. fix growth check
+    or checkCollision. */
+    this.board.checkCollision();
+  }
+
 };
 
 Snake.prototype.turn = function (dir) {
@@ -63,17 +71,18 @@ var Board = function () {
 };
 
 Board.prototype.checkEat = function () {
-  if (c.equals(this.snake.segments[0], this.apple.position)) {
-    this.apple.position = [];
-    this.apple.generateApple();
-    this.snake.grow();
-  }
+  return c.equals(this.snake.segments[0], this.apple.position)
 };
 
-Board.prototype.selfCollision = function () {
-  debugger;
-  if (this.snake.segments.slice(1).includes(this.snake.head)) {
+Board.prototype.snakeEat = function () {
+  this.apple.position = [];
+  this.apple.generateApple();
+  this.snake.grow();
+};
 
+Board.prototype.checkCollision = function () {
+  if (this.snake.segments.slice(1).includes(this.snake.segments[0])) {
+    debugger;
     alert("you lose!");
   }
 }
@@ -97,6 +106,6 @@ Apple.prototype.generateApple = function () {
   }
 };
 
-
+//----------------------------------------------------------
 
 module.exports = Board;
