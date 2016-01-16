@@ -181,7 +181,7 @@
 	  var direction = this.direction;
 	  for (var i = 0; i < 3; i++) {
 	    var last_segment = this.segments[this.segments.length - 1]
-	    this.segments.push(c.plus(last_segment, this.dirs[direction]))
+	    this.segments.push(last_segment)
 	  }
 	  // debugger
 	}
