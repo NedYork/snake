@@ -45,7 +45,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var View = __webpack_require__(1);
-	var $ = __webpack_require__(4);
+	var $ = __webpack_require__(3);
 	(function () {
 	  var view = new View($('.snake'));
 	})();
@@ -56,14 +56,17 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Board = __webpack_require__(2);
-	var $ = __webpack_require__(4);
+	
+	var $ = __webpack_require__(3);
 	var View = function ($el) {
 	  this.board = new Board();
 	  this.snake = this.board.snake;
+	  this.apple = this.board.apple;
 	  this.$el = $el;
 	  this.setupView();
 	  this.bindKeyEvents();
-	  setInterval(this.step.bind(this), 17);
+	
+	  setInterval(this.step.bind(this), 300);
 	};
 	
 	View.prototype.bindKeyEvents = function () {
@@ -83,13 +86,14 @@
 	};
 	
 	View.prototype.step = function () {
-	
 	  this.snake.move();
 	  this.render();
 	};
 	
 	View.prototype.render = function () {
 	  var board = this.board;
+	  var apple = this.apple;
+	  // debugger
 	  var snake = this.snake;
 	  var positions = snake.segments;
 	  var equals = function (array1, array2) {
@@ -98,6 +102,11 @@
 	
 	  $("li").each(function (idx, el) {
 	    $(el).removeClass().addClass("open");
+	    if (equals(apple.position, $(el).data('pos'))) {
+	
+	      $(el).addClass("apple");
+	    }
+	
 	    for (var i = 0; i < positions.length; i++) {
 	      if (equals(positions[i], $(el).data('pos'))) {
 	        $(el).removeClass().addClass("has-snake");
@@ -123,25 +132,6 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	var Snake = function () {
-	  this.direction = "N";
-	  this.segments = [[10,10]];
-	  this.dirs = { N: [-1, 0], S: [1, 0], E: [0, 1], W: [0, -1] };
-	
-	};
-	
-	
-	Snake.prototype.move = function () {
-	  this.segments[0] = c.plus(this.segments[0], this.dirs[this.direction]);
-	  this.head = this.segments[0];
-	};
-	
-	Snake.prototype.turn = function (dir) {
-	  if (!c.isOpposite(this.direction, dir)) {
-	    this.direction = dir;
-	  }
-	};
-	
 	var Coord = function () {};
 	var c = Coord.prototype;
 	
@@ -159,22 +149,69 @@
 	  return direcs1.indexOf(dir1) === direcs2.indexOf(dir2);
 	};
 	
+	var Snake = function (board) {
+	  this.board = board;
+	  this.direction = "N";
+	  this.segments = [[10,10]];
+	  this.dirs = { N: [-1, 0], S: [1, 0], E: [0, 1], W: [0, -1] };
 	
+	};
+	
+	
+	Snake.prototype.move = function () {
+	  this.segments[0] = c.plus(this.segments[0], this.dirs[this.direction]);
+	  this.head = this.segments[0];
+	  this.board.checkEat();
+	  // this.
+	};
+	
+	Snake.prototype.turn = function (dir) {
+	  if (!c.isOpposite(this.direction, dir)) {
+	    this.direction = dir;
+	  }
+	};
+	
+	//----------------------------------------------------------
+	// BOARD
 	var Board = function () {
-	  this.snake = new Snake();
 	  this.grid = [];
 	  for (var i = 0; i < 25; i++) {
 	    this.grid.push(new Array(25));
 	  }
+	
+	  this.snake = new Snake(this);
+	  this.apple = new Apple(this);
 	};
+	
+	Board.prototype.checkEat = function () {
+	  if (c.equals(this.snake.segments[0], this.apple)) {
+	    this.apple = [];
+	    this.generateApple();
+	  }
+	}
+	
+	//----------------------------------------------------------
+	// APPLE
+	var Apple = function (board) {
+	  this.position = [];
+	  this.generateApple();
+	}
+	
+	Apple.prototype.generateApple = function () {
+	  if (c.equals(this.position,[])) {
+	    var x = Math.floor(Math.random() * 25);
+	    var y = Math.floor(Math.random() * 25);
+	    this.position = [x, y];
+	  }
+	}
+	
 	
 	
 	module.exports = Board;
 
 
 /***/ },
-/* 3 */,
-/* 4 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!

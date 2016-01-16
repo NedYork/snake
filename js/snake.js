@@ -1,22 +1,3 @@
-var Snake = function () {
-  this.direction = "N";
-  this.segments = [[10,10]];
-  this.dirs = { N: [-1, 0], S: [1, 0], E: [0, 1], W: [0, -1] };
-
-};
-
-
-Snake.prototype.move = function () {
-  this.segments[0] = c.plus(this.segments[0], this.dirs[this.direction]);
-  this.head = this.segments[0];
-};
-
-Snake.prototype.turn = function (dir) {
-  if (!c.isOpposite(this.direction, dir)) {
-    this.direction = dir;
-  }
-};
-
 var Coord = function () {};
 var c = Coord.prototype;
 
@@ -34,14 +15,62 @@ c.isOpposite = function (dir1, dir2) {
   return direcs1.indexOf(dir1) === direcs2.indexOf(dir2);
 };
 
+var Snake = function (board) {
+  this.board = board;
+  this.direction = "N";
+  this.segments = [[10,10]];
+  this.dirs = { N: [-1, 0], S: [1, 0], E: [0, 1], W: [0, -1] };
 
+};
+
+
+Snake.prototype.move = function () {
+  this.segments[0] = c.plus(this.segments[0], this.dirs[this.direction]);
+  this.head = this.segments[0];
+  this.board.checkEat();
+  // this.
+};
+
+Snake.prototype.turn = function (dir) {
+  if (!c.isOpposite(this.direction, dir)) {
+    this.direction = dir;
+  }
+};
+
+//----------------------------------------------------------
+// BOARD
 var Board = function () {
-  this.snake = new Snake();
   this.grid = [];
   for (var i = 0; i < 25; i++) {
     this.grid.push(new Array(25));
   }
+
+  this.snake = new Snake(this);
+  this.apple = new Apple(this);
 };
+
+Board.prototype.checkEat = function () {
+  if (c.equals(this.snake.segments[0], this.apple)) {
+    this.apple = [];
+    this.generateApple();
+  }
+}
+
+//----------------------------------------------------------
+// APPLE
+var Apple = function (board) {
+  this.position = [];
+  this.generateApple();
+}
+
+Apple.prototype.generateApple = function () {
+  if (c.equals(this.position,[])) {
+    var x = Math.floor(Math.random() * 25);
+    var y = Math.floor(Math.random() * 25);
+    this.position = [x, y];
+  }
+}
+
 
 
 module.exports = Board;

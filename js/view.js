@@ -1,12 +1,15 @@
 var Board = require("./snake.js");
+
 var $ = require("./jquery-2.1.1.js");
 var View = function ($el) {
   this.board = new Board();
   this.snake = this.board.snake;
+  this.apple = this.board.apple;
   this.$el = $el;
   this.setupView();
   this.bindKeyEvents();
-  setInterval(this.step.bind(this), 17);
+
+  setInterval(this.step.bind(this), 300);
 };
 
 View.prototype.bindKeyEvents = function () {
@@ -26,13 +29,14 @@ View.prototype.bindKeyEvents = function () {
 };
 
 View.prototype.step = function () {
-
   this.snake.move();
   this.render();
 };
 
 View.prototype.render = function () {
   var board = this.board;
+  var apple = this.apple;
+  // debugger
   var snake = this.snake;
   var positions = snake.segments;
   var equals = function (array1, array2) {
@@ -41,6 +45,11 @@ View.prototype.render = function () {
 
   $("li").each(function (idx, el) {
     $(el).removeClass().addClass("open");
+    if (equals(apple.position, $(el).data('pos'))) {
+
+      $(el).addClass("apple");
+    }
+
     for (var i = 0; i < positions.length; i++) {
       if (equals(positions[i], $(el).data('pos'))) {
         $(el).removeClass().addClass("has-snake");
