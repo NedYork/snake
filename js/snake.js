@@ -28,8 +28,13 @@ var Snake = function (board) {
 
 Snake.prototype.move = function () {
   this.segments[0] = c.plus(this.segments[0], this.dirs[this.direction]);
+  // each subsequent segment becomes the previous segment
+  for (i = this.segments.length - 1; i > 0; i--) {
+    this.segments[i] = this.segments[i - 1];
+  }
+
   this.board.checkEat();
-  // this.
+
 };
 
 Snake.prototype.turn = function (dir) {
@@ -39,10 +44,12 @@ Snake.prototype.turn = function (dir) {
 };
 
 Snake.prototype.grow = function () {
+  var direction = this.direction;
   for (var i = 0; i < 3; i++) {
     var last_segment = this.segments[this.segments.length - 1]
-    this.segments.push(c.plus(last_segment, this.dirs[this.direction]))
+    this.segments.push(c.plus(last_segment, this.dirs[direction]))
   }
+  // debugger
 }
 
 //----------------------------------------------------------
