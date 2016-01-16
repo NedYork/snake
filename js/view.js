@@ -9,7 +9,7 @@ var View = function ($el) {
   this.setupView();
   this.bindKeyEvents();
 
-  setInterval(this.step.bind(this), 300);
+  setInterval(this.step.bind(this), 100);
 };
 
 View.prototype.bindKeyEvents = function () {

@@ -66,7 +66,7 @@
 	  this.setupView();
 	  this.bindKeyEvents();
 	
-	  setInterval(this.step.bind(this), 300);
+	  setInterval(this.step.bind(this), 100);
 	};
 	
 	View.prototype.bindKeyEvents = function () {
@@ -149,6 +149,8 @@
 	  return direcs1.indexOf(dir1) === direcs2.indexOf(dir2);
 	};
 	
+	//----------------------------------------------------------
+	// SNAKE
 	var Snake = function (board) {
 	  this.board = board;
 	  this.direction = "N";
@@ -160,7 +162,6 @@
 	
 	Snake.prototype.move = function () {
 	  this.segments[0] = c.plus(this.segments[0], this.dirs[this.direction]);
-	  this.head = this.segments[0];
 	  this.board.checkEat();
 	  // this.
 	};
@@ -170,6 +171,13 @@
 	    this.direction = dir;
 	  }
 	};
+	
+	Snake.prototype.grow = function () {
+	  for (var i = 0; i < 3; i++) {
+	    var last_segment = this.segments[this.segments.length - 1]
+	    this.segments.push(c.plus(last_segment, this.dirs[this.direction]))
+	  }
+	}
 	
 	//----------------------------------------------------------
 	// BOARD
@@ -184,25 +192,29 @@
 	};
 	
 	Board.prototype.checkEat = function () {
-	  if (c.equals(this.snake.segments[0], this.apple)) {
-	    this.apple = [];
-	    this.generateApple();
+	  if (c.equals(this.snake.segments[0], this.apple.position)) {
+	    this.apple.position = [];
+	    this.apple.generateApple();
+	    this.snake.grow();
+	    // debugger
 	  }
 	}
 	
 	//----------------------------------------------------------
 	// APPLE
 	var Apple = function (board) {
-	  this.position = [];
+	  this.board = board;
+	  // this.position = [];
 	  this.generateApple();
 	}
 	
 	Apple.prototype.generateApple = function () {
-	  if (c.equals(this.position,[])) {
-	    var x = Math.floor(Math.random() * 25);
-	    var y = Math.floor(Math.random() * 25);
-	    this.position = [x, y];
-	  }
+	  // if (this.position.length === 0) {
+	
+	  var x = Math.floor(Math.random() * 25);
+	  var y = Math.floor(Math.random() * 25);
+	  this.position = [x, y];
+	  // }
 	}
 	
 	
