@@ -9,12 +9,11 @@ var View = function ($el) {
   this.setupView();
   this.bindKeyEvents();
 
-  setInterval(this.step.bind(this), 70);
+  setInterval(this.step.bind(this), 100);
 };
 
 View.prototype.bindKeyEvents = function () {
   $(document).on("keydown", function (e) {
-    console.log(e.keyCode);
     var keycodes = [37, 38, 39, 40];
     var direction = ["W", "N", "E", "S"];
     if (keycodes.includes(e.keyCode)) {

@@ -66,12 +66,11 @@
 	  this.setupView();
 	  this.bindKeyEvents();
 	
-	  setInterval(this.step.bind(this), 70);
+	  setInterval(this.step.bind(this), 100);
 	};
 	
 	View.prototype.bindKeyEvents = function () {
 	  $(document).on("keydown", function (e) {
-	    console.log(e.keyCode);
 	    var keycodes = [37, 38, 39, 40];
 	    var direction = ["W", "N", "E", "S"];
 	    if (keycodes.includes(e.keyCode)) {
@@ -152,8 +151,8 @@
 	var Snake = function (board) {
 	  this.board = board;
 	  this.direction = "N";
-	  var x = Math.floor(Math.random() * 20)
-	  var y = Math.floor(Math.random() * 20)
+	  var x = Math.floor(Math.random() * 15);
+	  var y = Math.floor(Math.random() * 15);
 	  this.segments = [[x, y]];
 	  this.dirs = { N: [-1, 0], S: [1, 0], E: [0, 1], W: [0, -1] };
 	};
@@ -165,16 +164,7 @@
 	    this.segments[i] = this.segments[i - 1];
 	  }
 	
-	  if (this.board.checkEat()) {
-	    this.board.snakeEat();
-	  } else {
-	    /* checks collision but causes loss because #checkCollision checks
-	    if snake.segments.includes(snake head). but when snake is growing,
-	    snake segments includes heads and thus causes loss. fix growth check
-	    or checkCollision. */
-	    this.board.checkCollision();
-	  }
-	
+	  this.checks();
 	};
 	
 	Snake.prototype.turn = function (dir) {
@@ -186,9 +176,28 @@
 	Snake.prototype.grow = function () {
 	  var direction = this.direction;
 	  for (var i = 0; i < 3; i++) {
-	    var last_segment = this.segments[this.segments.length - 1]
-	    this.segments.push(last_segment)
+	    var last_segment = this.segments[this.segments.length - 1];
+	    this.segments.push(last_segment);
 	  }
+	};
+	
+	Snake.prototype.checks = function () {
+	  if (this.board.checkEat()) {
+	    this.board.snakeEat();
+	  } else if (this.board.checkCollision()) {
+	    console.log('collided');
+	  } else if (this.board.checkBound()) {
+	    console.log('out of bound');
+	  }
+	
+	
+	  // else {
+	  // //   /* checks collision but causes loss because #checkCollision checks
+	  // //   if snake.segments.includes(snake head). but when snake is growing,
+	  // //   snake segments includes heads and thus causes loss. fix growth check
+	  // //   or checkCollision. */
+	  //   this.board.checkCollision();
+	  // }
 	};
 	
 	//----------------------------------------------------------
@@ -203,7 +212,7 @@
 	};
 	
 	Board.prototype.checkEat = function () {
-	  return c.equals(this.snake.segments[0], this.apple.position)
+	  return c.equals(this.snake.segments[0], this.apple.position);
 	};
 	
 	Board.prototype.snakeEat = function () {
@@ -212,12 +221,28 @@
 	  this.snake.grow();
 	};
 	
+	// still need to fix
+	Board.prototype.checkBound = function () {
+	  if (
+	      this.snake.segments[0][0] > 25 ||
+	      this.snake.segments[0][1] > 25 ||
+	      this.snake.segments[0][0] < 0 ||
+	      this.snake.segments[0][1] < 0
+	    ) {
+	      console.log(this.snake.segments);
+	      return true;
+	  }
+	};
+	// still need to fix
 	Board.prototype.checkCollision = function () {
 	  if (this.snake.segments.slice(1).includes(this.snake.segments[0])) {
-	    debugger;
-	    alert("you lose!");
+	    return true;
 	  }
-	}
+	};
+	
+	Board.prototype.restart = function () {
+	  this.board = new Board();
+	};
 	
 	//----------------------------------------------------------
 	// APPLE
