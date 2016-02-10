@@ -15,15 +15,42 @@ c.isOpposite = function (dir1, dir2) {
   return direcs1.indexOf(dir1) === direcs2.indexOf(dir2);
 };
 
+Array.prototype.equalArrays = function (array) {
+  if (!array) {
+    return false;
+  } else if (this.length != array.length) {
+    return false;
+  }
+
+  for (var i = 0, l=this.length; i < l; i++) {
+    if (this[i] instanceof Array && array[i] instanceof Array) {
+      if (!this[i].equals(array[i])) {
+        return false;
+      } else if (this[i] != array[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+};
+
+Array.prototype.includeEquals = function (array) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i].equalArrays(array)) {
+      return true;
+    }
+  }
+  return false;
+};
+
 //----------------------------------------------------------
 // SNAKE
 var Snake = function (board) {
   this.board = board;
   this.direction = "N";
-  var x = Math.floor(Math.random() * 15);
-  var y = Math.floor(Math.random() * 15);
-  this.segments = [[x, y]];
+  this.segments = [[12, 12]];
   this.dirs = { N: [-1, 0], S: [1, 0], E: [0, 1], W: [0, -1] };
+  this.growing = false;
 };
 
 Snake.prototype.move = function () {
@@ -32,7 +59,6 @@ Snake.prototype.move = function () {
   for (i = this.segments.length - 1; i > 0; i--) {
     this.segments[i] = this.segments[i - 1];
   }
-
   this.checks();
 };
 
@@ -43,30 +69,29 @@ Snake.prototype.turn = function (dir) {
 };
 
 Snake.prototype.grow = function () {
+  this.growing = true;
   var direction = this.direction;
   for (var i = 0; i < 3; i++) {
     var last_segment = this.segments[this.segments.length - 1];
     this.segments.push(last_segment);
+    if (i === 2) {
+      this.growing = false;
+    }
   }
 };
 
 Snake.prototype.checks = function () {
   if (this.board.checkEat()) {
     this.board.snakeEat();
-  } else if (this.board.checkCollision()) {
-    console.log('collided');
-  } else if (this.board.checkBound()) {
-    console.log('out of bound');
   }
 
+  if (this.board.checkCollision()) {
+    alert("you eated yourself.");
 
-  // else {
-  // //   /* checks collision but causes loss because #checkCollision checks
-  // //   if snake.segments.includes(snake head). but when snake is growing,
-  // //   snake segments includes heads and thus causes loss. fix growth check
-  // //   or checkCollision. */
-  //   this.board.checkCollision();
-  // }
+  } else if (this.board.checkBound()) {
+    console.log("you fell off the edge of earth");
+
+  }
 };
 
 //----------------------------------------------------------
@@ -90,27 +115,27 @@ Board.prototype.snakeEat = function () {
   this.snake.grow();
 };
 
-// still need to fix
 Board.prototype.checkBound = function () {
   if (
-      this.snake.segments[0][0] > 25 ||
-      this.snake.segments[0][1] > 25 ||
+      this.snake.segments[0][0] > 24 ||
+      this.snake.segments[0][1] > 24 ||
       this.snake.segments[0][0] < 0 ||
       this.snake.segments[0][1] < 0
     ) {
-      console.log(this.snake.segments);
-      return true;
-  }
-};
-// still need to fix
-Board.prototype.checkCollision = function () {
-  if (this.snake.segments.slice(1).includes(this.snake.segments[0])) {
     return true;
   }
 };
 
-Board.prototype.restart = function () {
-  this.board = new Board();
+Board.prototype.checkCollision = function () {
+  var len;
+  if (this.snake.segments.length - 4 <= 0) {
+    len = 0;
+  }
+  var seg = this.snake.segments.slice().splice(len);
+  if (this.snake.segments.length > 1 && seg.includeEquals(this.snake.segments[0])) {
+    debugger;
+    return true;
+  }
 };
 
 //----------------------------------------------------------

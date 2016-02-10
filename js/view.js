@@ -3,8 +3,8 @@ var Board = require("./snake.js");
 var $ = require("./jquery-2.1.1.js");
 var View = function ($el) {
   this.board = new Board();
-  this.snake = this.board.snake;
   this.apple = this.board.apple;
+  this.snake = this.board.snake;
   this.$el = $el;
   this.setupView();
   this.bindKeyEvents();
@@ -28,6 +28,14 @@ View.prototype.bindKeyEvents = function () {
 
 View.prototype.step = function () {
   this.snake.move();
+  // if (this.board.checkCollision()) {
+  //   alert("you eated yourself.");
+  //
+  // } else if (this.board.checkBound()) {
+  //   alert("you fell off the edge of earth");
+  //
+  // }
+
   this.render();
 };
 
