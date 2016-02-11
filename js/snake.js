@@ -15,28 +15,9 @@ c.isOpposite = function (dir1, dir2) {
   return direcs1.indexOf(dir1) === direcs2.indexOf(dir2);
 };
 
-Array.prototype.equalArrays = function (array) {
-  if (!array) {
-    return false;
-  } else if (this.length != array.length) {
-    return false;
-  }
-
-  for (var i = 0, l=this.length; i < l; i++) {
-    if (this[i] instanceof Array && array[i] instanceof Array) {
-      if (!this[i].equals(array[i])) {
-        return false;
-      } else if (this[i] != array[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
-};
-
 Array.prototype.includeEquals = function (array) {
   for (var i = 0; i < this.length; i++) {
-    if (this[i].equalArrays(array)) {
+    if (equals(this[i], array)) {
       return true;
     }
   }
@@ -96,9 +77,8 @@ Snake.prototype.grow = function () {
 Snake.prototype.checks = function () {
   if (this.board.checkEat()) {
     this.board.snakeEat();
-  }
-  else if (this.board.checkCollision()) {
-    alert("game over");
+  } else if (this.board.checkCollision()) {
+    alert("you eated yourself.");
     document.location.reload();
   }
 };
@@ -177,5 +157,22 @@ Apple.prototype.generateApple = function () {
 };
 
 //----------------------------------------------------------
+
+// BAD APPLE
+
+var BadApple = function (board) {
+  this.board = board;
+  this.generateBadApple();
+
+  BadApple.prototype.generateBadApple = function () {
+    var x = Math.floor(Math.random() * 25);
+    var y = Math.floor(Math.random() * 25);
+    while (this.board.occupied([x, y])) {
+      x = Math.floor(Math.random() * 25);
+      y = Math.floor(Math.random() * 25);
+    }
+    this.position = [x, y];
+  };
+};
 
 module.exports = Board;

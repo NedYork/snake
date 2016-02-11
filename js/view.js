@@ -4,6 +4,7 @@ var $ = require("./jquery-2.1.1.js");
 var View = function ($el) {
   this.board = new Board();
   this.apple = this.board.apple;
+  this.badApple = this.board.badApple;
   this.snake = this.board.snake;
   this.$el = $el;
   this.setupView();
@@ -39,6 +40,7 @@ View.prototype.step = function () {
 View.prototype.render = function () {
   var board = this.board;
   var apple = this.apple;
+  var badapple = this.badApple;
   var snake = this.snake;
   var positions = snake.segments;
   $('#position').html(positions[0]);
