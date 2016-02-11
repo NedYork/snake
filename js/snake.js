@@ -75,9 +75,13 @@ Snake.prototype.grow = function () {
 };
 
 Snake.prototype.checks = function () {
-  if (this.board.checkEat()) {
+  if (this.board.checkEat() === 1) {
     this.board.snakeEat();
-  } else if (this.board.checkCollision()) {
+  } else if (this.board.checkEat() === 2) {
+    alert("you ate a bad apple.");
+    document.location.reload();
+  }
+  else if (this.board.checkCollision()) {
     alert("you eated yourself.");
     document.location.reload();
   }
@@ -97,7 +101,17 @@ var Board = function () {
 };
 
 Board.prototype.checkEat = function () {
-  return c.equals(this.snake.segments[0], this.apple.position);
+  if (c.equals(this.snake.segments[0], this.apple.position)) {
+    return 1;
+  }
+
+  for (var i = 0; i < this.badApples.length; i++) {
+    if (c.equals(this.badApples[i].position, this.snake.segments[0])) {
+      return 2;
+    }
+  }
+
+  return 0;
 };
 
 Board.prototype.snakeEat = function () {
