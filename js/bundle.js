@@ -61,7 +61,7 @@
 	var View = function ($el) {
 	  this.board = new Board();
 	  this.apple = this.board.apple;
-	  this.badApple = this.board.badApple;
+	  this.badApples = this.board.badApples;
 	  this.snake = this.board.snake;
 	  this.$el = $el;
 	  this.setupView();
@@ -97,7 +97,7 @@
 	View.prototype.render = function () {
 	  var board = this.board;
 	  var apple = this.apple;
-	  var badapple = this.badApple;
+	  var badapples = this.badApples;
 	  var snake = this.snake;
 	  var positions = snake.segments;
 	  $('#position').html(positions[0]);
@@ -111,8 +111,15 @@
 	      $(el).addClass("apple");
 	    }
 	
-	    for (var i = 0; i < positions.length; i++) {
-	      if (equals(positions[i], $(el).data('pos'))) {
+	    for (var i = 0; i < badapples.length; i++) {
+	      if (equals(badapples[i].position, $(el).data('pos'))) {
+	        $(el).addClass("bad-apple");
+	      }
+	    }
+	
+	
+	    for (var j = 0; j < positions.length; j++) {
+	      if (equals(positions[j], $(el).data('pos'))) {
 	        $(el).removeClass().addClass("has-snake");
 	      }
 	    }
@@ -232,6 +239,7 @@
 	  }
 	  this.snake = new Snake(this);
 	  this.apple = new Apple(this);
+	  this.badApples = [];
 	};
 	
 	Board.prototype.checkEat = function () {
@@ -241,6 +249,7 @@
 	Board.prototype.snakeEat = function () {
 	  this.apple.position = [];
 	  this.apple.generateApple();
+	  this.badApples.push(new BadApple(this));
 	  this.snake.grow();
 	};
 	
@@ -302,16 +311,16 @@
 	var BadApple = function (board) {
 	  this.board = board;
 	  this.generateBadApple();
+	};
 	
-	  BadApple.prototype.generateBadApple = function () {
-	    var x = Math.floor(Math.random() * 25);
-	    var y = Math.floor(Math.random() * 25);
-	    while (this.board.occupied([x, y])) {
-	      x = Math.floor(Math.random() * 25);
-	      y = Math.floor(Math.random() * 25);
-	    }
-	    this.position = [x, y];
-	  };
+	BadApple.prototype.generateBadApple = function () {
+	  var x = Math.floor(Math.random() * 25);
+	  var y = Math.floor(Math.random() * 25);
+	  while (this.board.occupied([x, y])) {
+	    x = Math.floor(Math.random() * 25);
+	    y = Math.floor(Math.random() * 25);
+	  }
+	  this.position = [x, y];
 	};
 	
 	module.exports = Board;

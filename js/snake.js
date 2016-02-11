@@ -93,6 +93,7 @@ var Board = function () {
   }
   this.snake = new Snake(this);
   this.apple = new Apple(this);
+  this.badApples = [];
 };
 
 Board.prototype.checkEat = function () {
@@ -102,6 +103,7 @@ Board.prototype.checkEat = function () {
 Board.prototype.snakeEat = function () {
   this.apple.position = [];
   this.apple.generateApple();
+  this.badApples.push(new BadApple(this));
   this.snake.grow();
 };
 
@@ -163,16 +165,16 @@ Apple.prototype.generateApple = function () {
 var BadApple = function (board) {
   this.board = board;
   this.generateBadApple();
+};
 
-  BadApple.prototype.generateBadApple = function () {
-    var x = Math.floor(Math.random() * 25);
-    var y = Math.floor(Math.random() * 25);
-    while (this.board.occupied([x, y])) {
-      x = Math.floor(Math.random() * 25);
-      y = Math.floor(Math.random() * 25);
-    }
-    this.position = [x, y];
-  };
+BadApple.prototype.generateBadApple = function () {
+  var x = Math.floor(Math.random() * 25);
+  var y = Math.floor(Math.random() * 25);
+  while (this.board.occupied([x, y])) {
+    x = Math.floor(Math.random() * 25);
+    y = Math.floor(Math.random() * 25);
+  }
+  this.position = [x, y];
 };
 
 module.exports = Board;
