@@ -8,6 +8,7 @@ html, body, figure, ul, li {
   color: inherit;
   font: inherit;
   text-align: inherit;
+  font-family: 'Poiret One', cursive;
 }
 
 
@@ -29,20 +30,28 @@ li {
   width: 20px;
   float: left;
   display: block;
-
 }
 
+figure {
+  padding: 10px;
+}
+
+.game {
+  text-align: center;
+}
 
 .open {
   background: white;
-
 }
 
 
 .has-snake {
   background: black;
+  border-radius: 50%;
 }
 
 .apple {
-  background: red;
+  background: url("https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/coffee.png");
+  background-size: cover;
+
 }

@@ -21,21 +21,18 @@ View.prototype.bindKeyEvents = function () {
       this.snake.turn(direction[movement]);
     } else if (e.keyCode === 192) {
       debugger;
-      console.log("youre in debugger")
+      console.log("youre in debugger");
     }
   }.bind(this));
 };
 
 View.prototype.step = function () {
   this.snake.move();
-  // if (this.board.checkCollision()) {
-  //   alert("you eated yourself.");
-  //
-  // } else if (this.board.checkBound()) {
-  //   alert("you fell off the edge of earth");
-  //
-  // }
-
+  if (this.board.checkBound() && !this.board.gameOver) {
+    this.board.gameOver = true;
+    alert("you fell off the edge of earth");
+    document.location.reload();
+  }
   this.render();
 };
 
@@ -44,6 +41,7 @@ View.prototype.render = function () {
   var apple = this.apple;
   var snake = this.snake;
   var positions = snake.segments;
+  $('#position').html(positions[0]);
   var equals = function (array1, array2) {
     return (array1[0] === array2[0]) && (array1[1] === array2[1]);
   };
@@ -64,7 +62,7 @@ View.prototype.render = function () {
 
 View.prototype.setupView = function () {
   this.$el.append("<ul>");
-  var boardlen = this.board.grid.length
+  var boardlen = this.board.grid.length;
   var $ul = $("<ul>").addClass("snake-grid group");
   for (var i = 0; i < Math.pow(boardlen, 2); i++) {
     var pos = [parseInt(i / boardlen), i % boardlen];
