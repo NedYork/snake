@@ -43,7 +43,6 @@ View.prototype.render = function () {
   var badapples = this.badApples;
   var snake = this.snake;
   var positions = snake.segments;
-  $('#position').html(positions[0]);
   var equals = function (array1, array2) {
     return (array1[0] === array2[0]) && (array1[1] === array2[1]);
   };

@@ -46,9 +46,11 @@
 
 	var View = __webpack_require__(1);
 	var $ = __webpack_require__(3);
-	$('button').click(function() {
-	  var view = new View($('.snake'));
-	});
+	$('button').click(
+	  setTimeout(function() {
+	    var view = new View($('.snake'));
+	  }, 1500)
+	);
 
 
 /***/ },
@@ -100,7 +102,6 @@
 	  var badapples = this.badApples;
 	  var snake = this.snake;
 	  var positions = snake.segments;
-	  $('#position').html(positions[0]);
 	  var equals = function (array1, array2) {
 	    return (array1[0] === array2[0]) && (array1[1] === array2[1]);
 	  };
@@ -224,7 +225,10 @@
 	  if (this.board.checkEat() === 1) {
 	    this.board.snakeEat();
 	  } else if (this.board.checkEat() === 2) {
-	    alert("you ate a bad apple.");
+	    // alert("that wasn't starbucks... you couldn't even");
+	    alert("that wasn't starbucks... #firstworldproblems");
+	    // alert("Josh is allergic to generic coffee.");
+	
 	    document.location.reload();
 	  }
 	  else if (this.board.checkCollision()) {

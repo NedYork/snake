@@ -78,7 +78,10 @@ Snake.prototype.checks = function () {
   if (this.board.checkEat() === 1) {
     this.board.snakeEat();
   } else if (this.board.checkEat() === 2) {
-    alert("you ate a bad apple.");
+    // alert("that wasn't starbucks... you couldn't even");
+    alert("that wasn't starbucks... #firstworldproblems");
+    // alert("Josh is allergic to generic coffee.");
+
     document.location.reload();
   }
   else if (this.board.checkCollision()) {
