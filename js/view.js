@@ -18,6 +18,7 @@ View.prototype.bindKeyEvents = function () {
     var keycodes = [37, 38, 39, 40];
     var direction = ["W", "N", "E", "S"];
     if (keycodes.includes(e.keyCode)) {
+      e.preventDefault();
       var movement = keycodes.indexOf(e.keyCode);
       this.snake.turn(direction[movement]);
     } else if (e.keyCode === 192) {
