@@ -45,12 +45,16 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var View = __webpack_require__(1);
-	var $ = __webpack_require__(3);
-	$('button').click(
-	  setTimeout(function() {
-	    var view = new View($('.snake'));
-	  }, 1500)
-	);
+	document.addEventListener('DOMContentLoaded', function () {
+	  $('.start').click(
+	    function () {
+	      setTimeout(function() {
+	        var view = new View($('.snake'));
+	      }, 1500);
+	    }
+	  );
+	
+	});
 
 
 /***/ },
@@ -77,6 +81,7 @@
 	    var keycodes = [37, 38, 39, 40];
 	    var direction = ["W", "N", "E", "S"];
 	    if (keycodes.includes(e.keyCode)) {
+	      e.preventDefault();
 	      var movement = keycodes.indexOf(e.keyCode);
 	      this.snake.turn(direction[movement]);
 	    } else if (e.keyCode === 192) {
