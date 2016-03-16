@@ -32,7 +32,8 @@ View.prototype.step = function () {
   this.snake.move();
   if (this.board.checkBound() && !this.board.gameOver) {
     this.board.gameOver = true;
-    alert("you fell off the edge of earth");
+    document.location.href = "#openModal";
+    // alert("you fell off the edge of earth");
     document.location.reload();
   }
   this.render();
